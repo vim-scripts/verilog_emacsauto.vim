@@ -1,0 +1,16 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1875
+
+Two emacs verilog-mode functions are mapped.
+\a expands all the verilog-mode autos (similar to C-c C-a in emacs).
+\d collapses all the verilog-mode autos (similar to C-c C-d in emacs).
+
+Previously if I wanted to update verilog-mode autos, I would
+   save and quit vim
+   fire up emacs
+   do the auto commands
+   save and close emacs
+   fire up vim.
+And in doing so, I would lose all the edit history in vim.
+With this I can just type \a and keep all the previous edit history for undos.
+
+This is my first attempt at writing a vim plugin. Code should be simple enough for an average Verilog user to take and fix/enhance according to needs. Doing :he plugin, :he write-plugin, or :he plugin-details should reveal how simple this really is.
