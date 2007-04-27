@@ -1,5 +1,5 @@
 " Vim filetype plugin for using emacs verilog-mode
-" Last Change: 2007 April 26
+" Last Change: 2007 April 27
 " Maintainer:  Seong Kang <seongk@wwcoms.com>
 " License:     This file is placed in the public domain.
 
@@ -23,6 +23,9 @@ noremap <SID>Delete :call <SID>Delete()<CR>
 noremenu <script> Plugin.Verilog\ AddAuto    <SID>Add
 noremenu <script> Plugin.Verilog\ DeleteAuto <SID>Delete
 
+setlocal foldmethod=expr
+setlocal foldexpr=VerilogEmacsAutoFoldLevel(v:lnum)
+
 " uncomment the two if blocks to leave the tabs alone
 function s:Add()
    if &expandtab
@@ -37,7 +40,7 @@ function s:Add()
       retab
       let &tabstop=s:save_tabstop
    endif
-   "!rm %.emacsautotmp
+   !rm %.emacsautotmp
 endfunction
 
 function s:Delete()
@@ -45,6 +48,15 @@ function s:Delete()
    " it needs a tmp file 'cause emacs uses stdin for something else
    w! %.emacsautotmp
    %!emacs -batch -l ~/elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto >& /dev/null; cat %.emacsautotmp 
-   "!rm %.emacsautotmp
+   !rm %.emacsautotmp
 endfunction
 
+function VerilogEmacsAutoFoldLevel(l)
+   if (getline(a:l-1)=~'\/\*A[A-Z]*\*\/' && getline(a:l)=~'\/\/ \(Outputs\|Inputs\|Inouts\|Beginning\)')
+      return 1
+   endif
+   if (getline(a:l-1)=~'\(End of automatics\|);\)')
+      return 0
+   endif
+   return '='
+endfunction
