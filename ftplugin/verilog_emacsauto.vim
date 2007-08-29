@@ -1,7 +1,12 @@
 " Vim filetype plugin for using emacs verilog-mode
-" Last Change: 2007 April 30
+" Last Change: 2007 August 29
 " Maintainer:  Seong Kang <seongk@wwcoms.com>
 " License:     This file is placed in the public domain.
+
+" comment out these two lines
+" if you don't want folding or if you prefer other folding methods
+setlocal foldmethod=expr
+setlocal foldexpr=VerilogEmacsAutoFoldLevel(v:lnum)
 
 if exists("loaded_verilog_emacsauto")
    finish
@@ -26,11 +31,6 @@ noremap <SID>Delete :call <SID>Delete()<CR>
 " add menu items for gvim
 noremenu <script> Plugin.Verilog\ AddAuto    <SID>Add
 noremenu <script> Plugin.Verilog\ DeleteAuto <SID>Delete
-
-" comment out these two lines
-" if you don't want folding or if you prefer other folding methods
-setlocal foldmethod=expr
-setlocal foldexpr=VerilogEmacsAutoFoldLevel(v:lnum)
 
 " Add function
 " saves current document to a temporary file
@@ -73,7 +73,7 @@ endfunction
 " VerilogEmacsAutoFoldLevel function
 " only deals with 0 and 1 levels
 function VerilogEmacsAutoFoldLevel(l)
-   if (getline(a:l-1)=~'\/\*A[A-Z]*\*\/' && getline(a:l)=~'\/\/ \(Outputs\|Inputs\|Inouts\|Beginning\)')
+   if (getline(a:l-1)=~'\/\*A\S*\*\/' && getline(a:l)=~'\/\/ \(Outputs\|Inputs\|Inouts\|Beginning\)')
       return 1
    endif
    if (getline(a:l-1)=~'\(End of automatics\|);\)')
