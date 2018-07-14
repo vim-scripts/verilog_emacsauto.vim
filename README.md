@@ -19,6 +19,31 @@ Plug 'zhuzhzh/verilog_emacsauto.vim', {'for': ['verilog', 'systemverilog'] }
 Plugin 'zhuzhzh/verilog_emacsauto.vim'
 ```
 
+## Windows
+In order to work on windows, you need to install unix bins for windows.
+Actually, git-for-windows already contains it.
+Please add the path like D:\Git\usr\bin to system variable PATH
+The bin path including emacs also needs to be added to PATH
+if it still doesn't work , please consider to use the absolute path.
+```vimscript
+function s:Add()
+   if &expandtab
+      let s:save_tabstop = &tabstop
+      let &tabstop=8
+   endif
+   " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
+   " maybe add /tmp to the temporary filename
+   w! %.emacsautotmp
+   !"D:\Program Files\emacs\bin\emacs.exe" -batch -l "D:\Program Files\emacs\share\emacs\site-lisp\verilog-mode.el" %.emacsautotmp -f verilog-batch-auto
+   %!"D:\Git\usr\bin\cat.exe" %.emacsautotmp 
+   if &expandtab
+      retab
+      let &tabstop=s:save_tabstop
+   endif
+   !"D:\Git\usr\bin\rm.exe" %.emacsautotmp
+endfunction
+```
+
 ## Feature
 Two emacs verilog-mode functions are mapped.
 - \<Leader>a expands all the verilog-mode autos (similar to C-c C-a in emacs).
