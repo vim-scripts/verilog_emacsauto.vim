@@ -21,6 +21,6 @@ Plugin 'zhuzhzh/verilog_emacsauto.vim'
 
 ## Feature
 Two emacs verilog-mode functions are mapped.
-\<Leader>a expands all the verilog-mode autos (similar to C-c C-a in emacs).
-\<Leader>d collapses all the verilog-mode autos (similar to C-c C-d in emacs).
+- \<Leader>a expands all the verilog-mode autos (similar to C-c C-a in emacs).
+- \<Leader>d collapses all the verilog-mode autos (similar to C-c C-d in emacs).
 
