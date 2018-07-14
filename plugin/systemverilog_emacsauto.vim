@@ -47,13 +47,14 @@ function s:Add()
    " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
-   !emacs -batch -l ~/elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-auto
-   %!cat %.emacsautotmp 
+   exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
+   exec 'silent %!cat %.emacsautotmp '
    if &expandtab
       retab
       let &tabstop=s:save_tabstop
    endif
-   !rm %.emacsautotmp
+   exec 'silent !rm %.emacsautotmp'
+   exec 'redraw!'
 endfunction
 
 " Delete function
@@ -65,9 +66,10 @@ function s:Delete()
    " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
-   !emacs -batch -l ~/elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto
-   %!cat %.emacsautotmp 
-   !rm %.emacsautotmp
+   exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto'
+   exec 'silent %!cat %.emacsautotmp'
+   exec 'silent !rm %.emacsautotmp'
+   exec 'redraw!'
 endfunction
 
 " VerilogEmacsAutoFoldLevel function
