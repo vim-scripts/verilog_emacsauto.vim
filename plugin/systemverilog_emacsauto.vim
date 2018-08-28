@@ -1,6 +1,7 @@
 " Vim filetype plugin for using emacs verilog-mode
-" Last Change: 2007 August 29
-" Maintainer:  Seong Kang <seongk@wwcoms.com>
+" Last Change: 2018 August 28
+" Origin Author:  Seong Kang <seongk@wwcoms.com>
+" New Author: Harris Zhu <zhuzhzh@163.com>
 " License:     This file is placed in the public domain.
 
 " comment out these two lines
