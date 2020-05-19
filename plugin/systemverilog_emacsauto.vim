@@ -13,6 +13,7 @@ if exists("loaded_verilog_emacsauto")
    finish
 endif
 let loaded_verilog_emacsauto = 1
+let s:is_win = has('win32')
 
 " map \a, \d pair to Add and Delete functions, assuming \ is the leader
 " alternatively, map C-A, C-D to Add and Delete functions
@@ -48,7 +49,7 @@ function s:Add()
    " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
-   if g:env =~ 'WINDOWS'
+   if s:is_win
        l:scrpt = 'silent !emacs -batch -l '.expand("$HOME/.elisp").'verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
        exec l:scrpt
    else
@@ -73,7 +74,7 @@ function s:Delete()
    " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
-   if g:env =~ 'WINDOWS'
+   if s:is_win
        l:scrpt = 'silent !emacs -batch -l '.expand("$HOME/.elisp").'verilog-mode.el %.emacsautotmp -f verilog-delete-auto'
        exec l:scrpt
    else
