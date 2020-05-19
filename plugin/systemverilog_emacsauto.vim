@@ -75,7 +75,7 @@ function s:Delete()
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
    if s:is_win
-       b:scrpt = 'silent !emacs -batch -l '.expand("$HOME/.elisp/").'verilog-mode.el %.emacsautotmp -f verilog-delete-auto'
+       let b:scrpt = 'silent !emacs -batch -l '.expand("$HOME/.elisp/").'verilog-mode.el %.emacsautotmp -f verilog-delete-auto'
        exec b:scrpt
    else
        exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto'
