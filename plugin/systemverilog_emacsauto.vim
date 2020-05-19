@@ -49,7 +49,7 @@ function s:Add()
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
    if g:env =~ 'WINDOWS'
-       l:scrpt = 'silent !emacs -batch -l ' + expand("$HOME/.elisp") + 'verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
+       l:scrpt = 'silent !emacs -batch -l '.expand("$HOME/.elisp").'verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
        exec l:scrpt
    else
        exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
@@ -74,7 +74,7 @@ function s:Delete()
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
    if g:env =~ 'WINDOWS'
-       l:scrpt = 'silent !emacs -batch -l ' + expand("$HOME/.elisp") + 'verilog-mode.el %.emacsautotmp -f verilog-delete-auto'
+       l:scrpt = 'silent !emacs -batch -l '.expand("$HOME/.elisp").'verilog-mode.el %.emacsautotmp -f verilog-delete-auto'
        exec l:scrpt
    else
        exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto'
