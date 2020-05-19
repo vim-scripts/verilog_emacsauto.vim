@@ -48,7 +48,7 @@ function s:Add()
    " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
-   exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
+   exec 'silent !emacs -batch -l ~/elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
    exec 'silent %!cat %.emacsautotmp '
    if &expandtab
       retab
@@ -67,7 +67,7 @@ function s:Delete()
    " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
    " maybe add /tmp to the temporary filename
    w! %.emacsautotmp
-   exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto'
+   exec 'silent !emacs -batch -l ~/elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto'
    exec 'silent %!cat %.emacsautotmp'
    exec 'silent !rm %.emacsautotmp'
    exec 'redraw!'
