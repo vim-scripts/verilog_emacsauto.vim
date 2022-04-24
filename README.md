@@ -49,3 +49,11 @@ Two emacs verilog-mode functions are mapped.
 - \<Leader>a expands all the verilog-mode autos (similar to C-c C-a in emacs).
 - \<Leader>d collapses all the verilog-mode autos (similar to C-c C-d in emacs).
 
+## config
+User can define the shortkeys for auto-add and auto-delete. Here is the example.
+```vim
+let g:VerilogModeAddKey = <Leader>va
+let g:VerilogModeDeleteKey = <Leader>vd
+let g:VerilogModePath = ~/.elisp/verilog-mode.el
+``
+
