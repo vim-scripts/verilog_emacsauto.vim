@@ -6,33 +6,59 @@
 
 " comment out these two lines
 " if you don't want folding or if you prefer other folding methods
-setlocal foldmethod=expr
-setlocal foldexpr=VerilogEmacsAutoFoldLevel(v:lnum)
+"setlocal foldmethod=expr
+"setlocal foldexpr=VerilogEmacsAutoFoldLevel(v:lnum)
 
 if exists("loaded_verilog_emacsauto")
    finish
 endif
 let loaded_verilog_emacsauto = 1
-let s:is_win = has('win32')
 
+function! s:InitVar(var, value)
+    if !exists(a:var)
+        exec 'let '.a:var.'='.string(a:value)
+    endif
+endfunction
 " map \a, \d pair to Add and Delete functions, assuming \ is the leader
 " alternatively, map C-A, C-D to Add and Delete functions
-if !hasmapto('<Plug>VerilogEmacsAutoAdd')
-   map <unique> <Leader>a <Plug>VerilogEmacsAutoAdd
-   "map <unique> <C-A> <Plug>VerilogEmacsAutoAdd
-endif
-if !hasmapto('<Plug>VerilogEmacsAutoDelete')
-   map <unique> <Leader>d <Plug>VerilogEmacsAutoDelete
-   "map <unique> <C-D> <Plug>VerilogEmacsAutoDelete
-endif
+
+let s_DefaultPath = expand("$HOME") . "/.elisp/verilog-mode.el"
+
+call s:InitVar('g:VerilogModeAddKey', '<Leader>a')
+call s:InitVar('g:VerilogModeDeleteKey', '<Leader>d')
+call s:InitVar('g:VerilogModeFile', s_DefaultPath)
+
+"if !hasmapto('<Plug>VerilogEmacsAutoAdd')
+"map <unique> <Leader>a <Plug>VerilogEmacsAutoAdd
+"endif
+try
+    if g:VerilogModeAddKey != ""
+        exec 'nnoremap <silent><unique> ' g:VerilogModeAddKey '<Plug>VerilogEmacsAutoAdd'
+    endif
+catch /^Vim\%((\a\+)\)\=:E227/
+endtry
+
+"if !hasmapto('<Plug>VerilogEmacsAutoDelete')
+"   map <unique> <Leader>d <Plug>VerilogEmacsAutoDelete
+"endif
+try
+    if g:VerilogModeDeleteKey != ""
+        exec 'nnoremap <silent><unique> ' g:VerilogModeDeleteKey '<Plug>VerilogEmacsAutoDelete'
+    endif
+catch /^Vim\%((\a\+)\)\=:E227/
+endtry
+
+
 
 noremap <unique> <script> <Plug>VerilogEmacsAutoAdd    <SID>Add
 noremap <unique> <script> <Plug>VerilogEmacsAutoDelete <SID>Delete
 noremap <SID>Add    :call <SID>Add()<CR>
 noremap <SID>Delete :call <SID>Delete()<CR>
 " add menu items for gvim
-noremenu <script> Plugin.Verilog\ AddAuto    <SID>Add
-noremenu <script> Plugin.Verilog\ DeleteAuto <SID>Delete
+noremenu <script> Verilog-Mode.AddAuto    <SID>Add
+noremenu <script> Verilog-Mode.DeleteAuto <SID>Delete
+
+let s:is_win = has('win16') || has('win32') || has('win64')
 
 " Add function
 " saves current document to a temporary file
@@ -48,20 +74,22 @@ function s:Add()
    endif
    " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
    " maybe add /tmp to the temporary filename
-   w! %.emacsautotmp
-   if s:is_win
-       let b:scrpt = 'silent !emacs -batch -l '.expand("$HOME/.elisp/").'verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
-       exec b:scrpt
-   else
-       exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-auto'
-   endif   
+   let l:tmpfile = expand("%:p:h") . "/." . expand("%:p:t")
+   "echom l:tmpfile
+   silent! call writefile(getline(1, "$"), fnameescape(l:tmpfile), '')
+   exec "silent !emacs -batch --no-site-file -l ". g:VerilogModeFile . " " . shellescape(l:tmpfile, 1) . " -f verilog-batch-auto 2> /dev/null"
+   "exec "silent !emacs -batch --no-site-file -l ". g:VerilogModeFile . " " . shellescape(l:tmpfile, 1) . " -f verilog-batch-auto"
+   let l:newcontent = readfile(fnameescape(l:tmpfile), '')
    
-   exec 'silent %!cat %.emacsautotmp '
    if &expandtab
       retab
       let &tabstop=s:save_tabstop
    endif
-   exec 'silent !rm %.emacsautotmp'
+   "call deletebufline('.', 1, '$')
+   let l:i=1
+   call setline(1, l:newcontent)
+   exec "silent !rm " . shellescape(l:tmpfile)
+   w! %
    exec 'redraw!'
 endfunction
 
@@ -73,15 +101,15 @@ endfunction
 function s:Delete()
    " a tmp file is need 'cause emacs doesn't support the stdin to stdout flow
    " maybe add /tmp to the temporary filename
-   w! %.emacsautotmp
-   if s:is_win
-       let b:scrpt = 'silent !emacs -batch -l '.expand("$HOME/.elisp/").'verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto'
-       exec b:scrpt
-   else
-       exec 'silent !emacs -batch -l ~/.elisp/verilog-mode.el %.emacsautotmp -f verilog-batch-delete-auto'
+   let l:tmpfile = expand("%:p:h") . "/." . expand("%:p:t")
+   "exec 'wrtie'   fnameescape(l:tmpfile)
+   silent! call writefile(getline(1, "$"), fnameescape(l:tmpfile), '')
+   "exec "silent !emacs -batch --no-site-file -l " . g:VerilogModeFile . " " . l:tmpfile . " -f verilog-batch-delete-auto"
+   exec "silent !emacs -batch --no-site-file -l " . g:VerilogModeFile . " " . l:tmpfile . " -f verilog-batch-delete-auto 2> /dev/null"
    endif
-   exec 'silent %!cat %.emacsautotmp'
-   exec 'silent !rm %.emacsautotmp'
+   exec "silent %!cat " . l:tmpfile
+   exec "silent !rm " . l:tmpfile
+   w! %
    exec 'redraw!'
 endfunction
 
