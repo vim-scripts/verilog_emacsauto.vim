@@ -24,12 +24,13 @@ endfunction
 
 let s_DefaultPath = expand("$HOME") . "/.elisp/verilog-mode.el"
 
-call s:InitVar('g:VerilogModeAddKey', '<Leader>a')
-call s:InitVar('g:VerilogModeDeleteKey', '<Leader>d')
+call s:InitVar('g:VerilogModeAddKey', '<leader>a')
+call s:InitVar('g:VerilogModeDeleteKey', '<leader>d')
 call s:InitVar('g:VerilogModeFile', s_DefaultPath)
+call s:InitVar('g:VerilogModeTrace', 0)
 
 "if !hasmapto('<Plug>VerilogEmacsAutoAdd')
-"map <unique> <Leader>a <Plug>VerilogEmacsAutoAdd
+"map <unique> <leader>a <Plug>VerilogEmacsAutoAdd
 "endif
 try
     if g:VerilogModeAddKey != ""
@@ -39,7 +40,7 @@ catch /^Vim\%((\a\+)\)\=:E227/
 endtry
 
 "if !hasmapto('<Plug>VerilogEmacsAutoDelete')
-"   map <unique> <Leader>d <Plug>VerilogEmacsAutoDelete
+"   map <unique> <leader>d <Plug>VerilogEmacsAutoDelete
 "endif
 try
     if g:VerilogModeDeleteKey != ""
@@ -77,8 +78,11 @@ function s:Add()
    let l:tmpfile = expand("%:p:h") . "/." . expand("%:p:t")
    "echom l:tmpfile
    silent! call writefile(getline(1, "$"), fnameescape(l:tmpfile), '')
-   exec "silent !emacs -batch --no-site-file -l ". g:VerilogModeFile . " " . shellescape(l:tmpfile, 1) . " -f verilog-batch-auto 2> /dev/null"
-   "exec "silent !emacs -batch --no-site-file -l ". g:VerilogModeFile . " " . shellescape(l:tmpfile, 1) . " -f verilog-batch-auto"
+   if g:VerilogModeTrace
+	   exec "silent !emacs -batch --no-site-file -l ". g:VerilogModeFile . " " . shellescape(l:tmpfile, 1) . " -f verilog-batch-auto"
+   else
+	   exec "silent !emacs -batch --no-site-file -l ". g:VerilogModeFile . " " . shellescape(l:tmpfile, 1) . " -f verilog-batch-auto 2> /dev/null"
+   endif
    let l:newcontent = readfile(fnameescape(l:tmpfile), '')
    
    if &expandtab
@@ -104,11 +108,13 @@ function s:Delete()
    let l:tmpfile = expand("%:p:h") . "/." . expand("%:p:t")
    "exec 'wrtie'   fnameescape(l:tmpfile)
    silent! call writefile(getline(1, "$"), fnameescape(l:tmpfile), '')
-   "exec "silent !emacs -batch --no-site-file -l " . g:VerilogModeFile . " " . l:tmpfile . " -f verilog-batch-delete-auto"
-   exec "silent !emacs -batch --no-site-file -l " . g:VerilogModeFile . " " . l:tmpfile . " -f verilog-batch-delete-auto 2> /dev/null"
+   if g:VerilogModeTrace
+	   exec "silent !emacs -batch --no-site-file -l " . g:VerilogModeFile . " " . l:tmpfile . " -f verilog-batch-delete-auto"
+   else
+	   exec "silent !emacs -batch --no-site-file -l " . g:VerilogModeFile . " " . l:tmpfile . " -f verilog-batch-delete-auto 2> /dev/null"
    endif
-   exec "silent %!cat " . l:tmpfile
-   exec "silent !rm " . l:tmpfile
+   exec "silent %!cat " . shellescape(l:tmpfile)
+   exec "silent !rm " . shellescape(l:tmpfile)
    w! %
    exec 'redraw!'
 endfunction
